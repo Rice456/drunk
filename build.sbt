@@ -8,15 +8,7 @@ val projectName = "drunk"
 
 name := projectName
 
-organization := "com.github.jarlakxen"
-
-crossScalaVersions := Seq("2.12.7", "2.11.12")
-
-scalaVersion := crossScalaVersions.value.head
-
-organizationName := "Facundo Viale"
-startYear := Some(2018)
-licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
+scalaVersion := "2.12.15"
 
 publishMavenStyle := true
 
@@ -73,3 +65,38 @@ libraryDependencies ++= Seq(
 fork in (Test, run) := false
 
 scalacOptions in Test ++= Seq("-Yrangepos")
+
+credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")
+
+This / organization := "io.github.rice456"
+
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/Rice456/drunk"),
+    "scm:git@github.com:Rice456/drunk.git"
+  )
+)
+ThisBuild / developers := List(
+  Developer(
+    id = "rice456",
+    name = "Joe liu",
+    email = "joe.liu@gummicube.com",
+    url = url("https://github.com/Rice456/drunk")
+  )
+)
+
+ThisBuild / description := "drunk"
+ThisBuild / licenses := List(
+  "Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt")
+)
+ThisBuild / homepage := Some(url("https://github.com/Rice456/drunk"))
+
+// Remove all additional repository other than Maven Central from POM
+ThisBuild / pomIncludeRepository := { _ => false }
+ThisBuild / publishTo := {
+  val nexus = "https://s01.oss.sonatype.org/"
+  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+ThisBuild / publishMavenStyle := true
+ThisBuild / publishArtifact in Test := false
