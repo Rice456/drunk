@@ -9,3 +9,5 @@ addSbtPlugin("org.foundweekends"  % "sbt-bintray"  % "0.5.4")
 // addSbtPlugin("ch.epfl.scala"     % "sbt-scalafix"  % "0.5.7")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header"    % "5.0.0")
+
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")

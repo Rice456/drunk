@@ -4,13 +4,18 @@
 
 // ··· Project Info ···
 
-val projectName = "drunk"
+name := "drunk"
 
-name := projectName
+description := "A simple GraphQL client on top of Sangria, Akka HTTP and Circe"
 
 scalaVersion := "2.12.15"
 
+version := "2.5.0"
+
 publishMavenStyle := true
+
+//For M1 architecture
+Global / serverConnectionType := ConnectionType.Tcp
 
 // ··· Project Options ···
 
@@ -66,9 +71,12 @@ fork in (Test, run) := false
 
 scalacOptions in Test ++= Seq("-Yrangepos")
 
+/**
+ * Maven specific settings for publishing to Maven central.
+ */
 credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")
 
-This / organization := "io.github.rice456"
+ThisBuild / organization := "io.github.rice456"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
