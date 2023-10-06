@@ -158,6 +158,7 @@ object GraphQLClient {
   implicit class Either212[+A, +B](either: Either[A, B]) {
 
     def toTry(implicit ev: A <:< Throwable): Try[B] = either match {
+      // Try to modify this part
       case Right(b) => Success(b)
       case Left(a) => Failure(a)
     }
