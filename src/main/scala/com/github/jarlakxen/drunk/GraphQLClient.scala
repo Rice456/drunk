@@ -169,8 +169,6 @@ object GraphQLClient {
     }
   }
 
-  type GraphQLResponse[Res] = Either[GraphQLResponseError, GraphQLResponseData[Res]]
-
   def apply(backend: AkkaBackend, clientOptions: ClientOptions): GraphQLClient =
     new GraphQLClient(clientOptions, backend)
 
