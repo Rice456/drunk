@@ -19,3 +19,5 @@ package com.github.jarlakxen.drunk
 final case class GraphQLResponseError(errors: List[String], networkStatus: Int)
 
 final case class GraphQLResponseData[T](data: T)
+
+final case class summaryResult[Res](left: GraphQLResponseError, right: GraphQLResponseData[Res])

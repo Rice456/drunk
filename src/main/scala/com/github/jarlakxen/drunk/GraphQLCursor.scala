@@ -24,7 +24,7 @@ import sangria._
 
 class GraphQLCursor[Res, Vars](
   client: GraphQLClient,
-  val result: Future[GraphQLClient.GraphQLResponse[Res]],
+  val result: Future[summaryResult[Res]],
   val extensions: Future[GraphQLExtensions],
   val lastOperation: GraphQLOperation[Res, Vars])(implicit responseDecoder: Decoder[Res], ec: ExecutionContext) {
 

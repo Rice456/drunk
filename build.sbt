@@ -51,6 +51,7 @@ val circeV          = "0.10.+"
 val slf4JV          = "1.7.25"
 val logbackV        = "1.2.3"
 val scalatestV      = "3.0.5"
+val AkkaVersion     = "2.5.8"
 
 libraryDependencies ++= Seq(
   // --- GraphQL --
@@ -67,6 +68,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"      %  "logback-classic"  % logbackV        % Test,
   // --- Testing ---
   "com.typesafe.akka"   %% "akka-http-testkit"  % akkaHttpV     % Test,
+  "com.typesafe.akka"   %% "akka-testkit"       % AkkaVersion   % Test,
   "org.scalatest"       %% "scalatest"          % scalatestV    % Test
 )
 

@@ -118,8 +118,8 @@ class GraphQLClient private[GraphQLClient] (options: ClientOptions, backend: Akk
 
     val operation: GraphQLOperation[Res, Vars] = GraphQLOperation(doc, variables, operationName)
     val result = execute(operation)
-    val data: Future[GraphQLClient.GraphQLResponse[Res]] = result.flatMap {
-      case (status, body) => Future.fromTry(extractErrorOrData(body, status))
+    val data: Future[summaryResult[Res]] = result.flatMap {
+      case (status, body) => Future.apply(extractErrorAndData(body, status))
     }
     val extensions = result.map { case (_, body) => extractExtensions(body) }
     new GraphQLCursor(this, data, extensions, operation)
@@ -130,7 +130,7 @@ class GraphQLClient private[GraphQLClient] (options: ClientOptions, backend: Akk
     dec: Decoder[Res],
     en: Encoder[Vars],
     ec: ExecutionContext
-  ): Future[GraphQLResponse[Res]] =
+  ): Future[summaryResult[Res]] =
     mutate(doc, Some(variables), None)
 
   def mutate[Res, Vars](doc: Document, variables: Vars, operationName: Option[String])(
@@ -138,10 +138,10 @@ class GraphQLClient private[GraphQLClient] (options: ClientOptions, backend: Akk
     dec: Decoder[Res],
     en: Encoder[Vars],
     ec: ExecutionContext
-  ): Future[GraphQLResponse[Res]] = {
+  ): Future[summaryResult[Res]] = {
 
     val result = execute(doc, Some(variables), operationName)
-    result.flatMap { case (status, body) => Future.fromTry(extractErrorOrData(body, status)) }
+    result.flatMap { case (status, body) => Future.apply(extractErrorAndData(body, status)) }
   }
 
   def schema(implicit ec: ExecutionContext): Future[IntrospectionSchema] =
@@ -209,13 +209,18 @@ object GraphQLClient {
   private[GraphQLClient] def extractData[Res](jsonBody: Json)(implicit dec: Decoder[Res]): Try[GraphQLResponseData[Res]] =
     jsonBody.hcursor.downField("data").as[Res].toTry.map(GraphQLResponseData(_))
 
-  private[GraphQLClient] def extractErrorOrData[Res](jsonBody: Json, statusCode: Int)(implicit dec: Decoder[Res]): Try[GraphQLResponse[Res]] = {
-    val errors: Option[Try[GraphQLResponse[Res]]] =
-      extractErrors(jsonBody, statusCode).map(errors => Success(Left(errors)))
-    val data: Try[GraphQLResponse[Res]] =
-      extractData(jsonBody).map(Right(_))
+  private[GraphQLClient] def extractErrorAndData[Res](jsonBody: Json, statusCode: Int)(implicit dec: Decoder[Res]): summaryResult[Res] = {
+    val errors: Option[GraphQLResponseError] =
+      extractErrors(jsonBody, statusCode)
+    val data: Try[GraphQLResponseData[Res]] =
+      extractData(jsonBody)
 
-    errors.getOrElse(data)
+    if (errors.isEmpty) {
+      summaryResult(GraphQLResponseError(Nil, statusCode), data.toOption.getOrElse(None))
+    }
+    else {
+      summaryResult(errors.get, data.toOption.getOrElse(None))
+    }
   }
 
   private[GraphQLClient] def extractExtensions(jsonBody: Json): GraphQLExtensions =
