@@ -18,7 +18,7 @@ publishMavenStyle := true
 
 githubOwner := "rice456"
 githubRepository := "drunk"
-githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
+githubTokenSource := TokenSource.GitConfig("github.token")
 
 updateOptions := updateOptions.value.withGigahorse(false) // fix (publish) okhttp3.internal.http2.StreamResetException
 
@@ -45,13 +45,13 @@ resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snap
 // ··· Project Dependencies ···
 val sangriaV        = "1.4.+"
 val sangriaCirceV   = "1.2.1"
-val akkaHttpV       = "10.1.+"
+val akkaHttpV       = "10.1.3"
 val akkaHttpCircleV = "1.22.+"
 val circeV          = "0.10.+"
 val slf4JV          = "1.7.25"
 val logbackV        = "1.2.3"
 val scalatestV      = "3.0.5"
-val AkkaVersion     = "2.5.8"
+val AkkaVersion     = "2.5.14"
 
 libraryDependencies ++= Seq(
   // --- GraphQL --
@@ -59,6 +59,7 @@ libraryDependencies ++= Seq(
   "org.sangria-graphql" %% "sangria-circe"    % sangriaCirceV,
   // --- Akka --
   "com.typesafe.akka"   %% "akka-http"        % akkaHttpV,
+  "com.typesafe.akka"   %% "akka-stream"      % AkkaVersion,
   "de.heikoseeberger"   %% "akka-http-circe"  % akkaHttpCircleV,
   // --- Utils ---
   "io.circe"            %% "circe-generic"    % circeV,

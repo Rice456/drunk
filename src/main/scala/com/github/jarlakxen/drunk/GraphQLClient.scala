@@ -214,10 +214,10 @@ object GraphQLClient {
       extractData(jsonBody)
 
     if (errors.isEmpty) {
-      summaryResult(GraphQLResponseError(Nil, statusCode), data.toOption.getOrElse(None))
+      summaryResult(GraphQLResponseError(Nil, statusCode), data.toOption.get)
     }
     else {
-      summaryResult(errors.get, data.toOption.getOrElse(None))
+      summaryResult(errors.get, data.toOption.get)
     }
   }
 
